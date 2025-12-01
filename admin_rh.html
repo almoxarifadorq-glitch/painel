@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SGL Cloud - Gestão de RH</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="material-icons">badge</span> GESTÃO DE PESSOAS
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
+            <a href="admin_ativos.html" class="btn-nav"><span class="material-icons">settings</span> Ativos</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="action-panels">
+            <div class="card border-primary">
+                <h2><span class="material-icons txt-primary">person_add</span> Novo Colaborador</h2>
+                
+                <label>Matrícula (Crachá):</label>
+                <input type="text" id="novo-mat" placeholder="Ex: 1020" autocomplete="off">
+                
+                <label>Nome Completo:</label>
+                <input type="text" id="novo-nome" placeholder="Ex: João da Silva" autocomplete="off">
+                
+                <label>Permissões de Acesso:</label>
+                <div class="selector-group">
+                    <label class="option-btn"><input type="checkbox" id="perm-col" checked> Coletor</label>
+                    <label class="option-btn"><input type="checkbox" id="perm-hst" checked> Headset</label>
+                    <label class="option-btn"><input type="checkbox" id="perm-emp"> Máquina (NR11)</label>
+                </div>
+
+                <button class="btn-primary" onclick="salvarRH()">💾 CADASTRAR / ATUALIZAR</button>
+            </div>
+
+            <div class="card border-neutral">
+                <div class="table-header">
+                    <h2><span class="material-icons txt-neutral">groups</span> Colaboradores</h2>
+                    <input type="text" id="busca" placeholder="🔍 Buscar..." class="search-bar" onkeyup="filtrarRH()">
+                </div>
+                
+                <table id="tabela-rh">
+                    <thead>
+                        <tr>
+                            <th>Matrícula</th>
+                            <th>Nome</th>
+                            <th>Permissões</th>
+                            <th style="text-align:right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-rh">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module" src="admin_rh.js"></script>
+    <script type="module" src="auth_guard.js"></script>
+</body>
+</html>

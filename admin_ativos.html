@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>GESTÃO DE ATIVOS</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="material-icons">inventory_2</span> GESTÃO DE ATIVOS
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
+            <a href="admin_rh.html" class="btn-nav"><span class="material-icons">badge</span> Pessoas</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="action-panels">
+            <div class="card border-primary">
+                <h2><span class="material-icons txt-primary">add_box</span> Novo Ativo</h2>
+                
+                <label>Código do Ativo (ID):</label>
+                <input type="text" id="novo-id" placeholder="Ex: COL-50" onkeyup="detectarTipo()" autocomplete="off">
+                
+                <label>Tipo de Equipamento:</label>
+                <div class="selector-group">
+                    <label class="option-btn"><input type="radio" name="tipo" value="COL" id="radio-col" checked> 📱 Coletor</label>
+                    <label class="option-btn"><input type="radio" name="tipo" value="HST" id="radio-hst"> 🎧 Headset</label>
+                    <label class="option-btn"><input type="radio" name="tipo" value="EMP" id="radio-emp"> 🚜 Máquina</label>
+                </div>
+
+                <button class="btn-success" onclick="cadastrarAtivo()">💾 SALVAR NO INVENTÁRIO</button>
+            </div>
+
+            <div class="card border-neutral">
+                <div class="table-header">
+                    <h2><span class="material-icons txt-neutral">list_alt</span> Inventário</h2>
+                    <input type="text" id="busca" placeholder="🔍 Buscar ativo..." class="search-bar" onkeyup="filtrarAtivos()">
+                </div>
+                
+                <table id="tabela-ativos">
+                    <thead>
+                        <tr>
+                            <th>Ativo</th>
+                            <th>Status</th>
+                            <th style="text-align:right">Gerenciar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-corpo">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module" src="admin_ativos.js"></script>
+    <script type="module" src="auth_guard.js"></script>
+</body>
+</html>

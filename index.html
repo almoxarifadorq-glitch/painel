@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de ativos RQ</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="material-icons">cloud_sync</span> CONTROLE DE ATIVOS<span class="version-tag">RIO QUALITY</span>
+        </div>
+        <div class="nav-links">
+            <a href="admin_ativos.html" class="btn-nav"><span class="material-icons">settings</span> Ativos</a>
+            <a href="admin_rh.html" class="btn-nav"><span class="material-icons">badge</span> Pessoas</a>
+            <a href="admin_insumos.html" class="btn-nav"><span class="material-icons">inventory</span> Insumos</a>
+            <a href="relatorios.html" class="btn-nav"><span class="material-icons">analytics</span> Relatórios</a>
+            
+<div style="display:flex; gap:15px; align-items:center;">
+    <button class="btn-toggle" onclick="alternarTema()">🌙 Escuro</button>
+
+    <div id="user-display" style="font-size:0.9rem;">...</div>
+    <button class="btn-clear" onclick="fazerLogout()" style="padding:5px 10px; font-size:0.8rem; background:rgba(255,255,255,0.2); color:white; border:none;">SAIR</button>
+</div>
+    </header>
+
+    <main class="container">
+        
+        <section class="kpi-container">
+            <div class="kpi-card c-azul"><div class="info"><h3>Frota Total</h3><span id="kpi-total">0</span></div></div>
+            <div class="kpi-card c-amarelo"><div class="info"><h3>Em Uso</h3><span id="kpi-uso">0</span></div></div>
+            <div class="kpi-card c-roxo"><div class="info"><h3>Manutenção</h3><span id="kpi-manutencao">0</span></div></div>
+            <div class="kpi-card c-verde"><div class="info"><h3>Disponíveis</h3><span id="kpi-livre">0</span></div></div>
+        </section>
+
+        <section class="action-panels">
+            
+            <div class="card border-primary">
+                <h2><span class="material-icons txt-primary">outbound</span> Nova Retirada</h2>
+                
+                <div class="info-box">ℹ️ <strong>Modo Comboio:</strong> Crachá trava para múltiplas retiradas.</div>
+
+                <label>1. Bipe o Crachá:</label>
+                <input type="text" id="ret-cracha" placeholder="Ex: 1020" autofocus autocomplete="off">
+                <button class="btn-clear" id="btn-destravar" onclick="destravarCracha()" style="display:none;">🔓 Trocar Pessoa (Esc)</button>
+
+                <label>2. Bipe o Equipamento:</label>
+                <input type="text" id="ret-ativo" placeholder="Ex: COL-01, HST-05..." autocomplete="off">
+
+                <button class="btn-primary" onclick="realizarRetirada()">LIBERAR SAÍDA</button>
+            </div>
+
+            <div class="card border-success">
+                <h2><span class="material-icons txt-success">input</span> Devolução</h2>
+                
+                <label>Bipe para Devolver:</label>
+                <input type="text" id="dev-ativo" placeholder="Ex: HST-01..." autocomplete="off">
+                
+                <label id="titulo-energia">🔋 Nível de Bateria:</label>
+                <div class="selector-group">
+                    <label class="option-btn opt-ok"><input type="radio" name="bateria" value="OK" checked><span class="material-icons">battery_full</span> Cheio</label>
+                    <label class="option-btn opt-alert"><input type="radio" name="bateria" value="MEDIA"><span class="material-icons">battery_3_bar</span> Médio</label>
+                    <label class="option-btn opt-danger"><input type="radio" name="bateria" value="BAIXA"><span class="material-icons">battery_alert</span> Baixo</label>
+                </div>
+
+                <label>🛡️ Estado Físico:</label>
+                <div class="selector-group">
+                    <label class="option-btn opt-ok" onclick="toggleAvaria(false)"><input type="radio" name="condicao" value="OK" checked> Intacto</label>
+                    <label class="option-btn opt-maintenance" onclick="toggleAvaria(true)"><input type="radio" name="condicao" value="AVARIADO"> Avariado</label>
+                </div>
+
+                <div id="box-avaria" style="display:none; margin-top:10px;">
+                    <textarea id="obs-avaria" rows="2" placeholder="Descreva o Dano..."></textarea>
+                </div>
+
+                <button class="btn-success" onclick="realizarDevolucao()">CONFIRMAR DEVOLUÇÃO</button>
+            </div>
+        </section>
+
+        <section class="card border-neutral">
+            <div class="table-header">
+                <h2><span class="material-icons txt-neutral">toc</span> Monitoramento</h2>
+                <input type="text" id="filtro" placeholder="🔍 Buscar..." class="search-bar" onkeyup="filtrar()">
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Ativo</th><th>Status</th><th>Colaborador</th><th style="text-align:right">Ações</th></tr>
+                </thead>
+                <tbody id="tabela-corpo"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="modal-historico">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharHistorico()">&times;</span>
+            <h2 class="modal-title">Histórico Recente</h2>
+            <ul class="hist-list" id="lista-historico"></ul>
+        </div>
+    </div>
+    <script type="module" src="auth_guard.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

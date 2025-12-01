@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SGL - Almoxarifado</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Estilos específicos de saldo */
+        .saldo-tag { font-size: 1.2rem; font-weight: bold; padding: 5px 15px; border-radius: 20px; background: #e9ecef; color: #333; }
+        .saldo-baixo { background: #f8d7da; color: #721c24; animation: pulse 2s infinite; }
+        .lista-suspensa { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-color); margin-bottom: 15px; font-size: 1rem; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-links">
+    <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
+    <a href="relatorios_insumos.html" class="btn-nav"><span class="material-icons">history</span> Histórico</a>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-left:15px; border-left:1px solid rgba(255,255,255,0.3); padding-left:15px;">
+        <div id="user-display" style="font-size:0.8rem; opacity:0.9;">...</div>
+        <button onclick="fazerLogout()" style="background:rgba(255,50,50,0.2); border:1px solid rgba(255,50,50,0.4); padding:5px 10px; font-size:0.8rem; width:auto; margin:0;">SAIR</button>
+    </div>
+</div>
+    </header>
+
+    <main class="container">
+        
+        <div class="kpi-container" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="kpi-card c-verde"><div class="info"><h3>Itens com Estoque</h3><span id="kpi-ok">0</span></div></div>
+            <div class="kpi-card c-roxo"><div class="info"><h3>Estoque Crítico</h3><span id="kpi-baixo">0</span></div></div>
+        </div>
+
+        <div class="action-panels">
+            
+            <div class="card border-success">
+                <h2><span class="material-icons txt-success">add_shopping_cart</span> Entrada / Reposição</h2>
+                <label>Nome do Item:</label>
+                <input type="text" id="ent-item" list="lista-itens" placeholder="Ex: Fita Durex..." autocomplete="off">
+                <datalist id="lista-itens"></datalist>
+
+                <label>Quantidade a adicionar:</label>
+                <input type="number" id="ent-qtd" placeholder="Ex: 10" min="1">
+
+                <button class="btn-success" onclick="realizarEntrada()">➕ ADICIONAR AO ESTOQUE</button>
+            </div>
+
+            <div class="card border-primary">
+                <h2><span class="material-icons txt-primary">outbound</span> Retirada de Consumo</h2>
+                
+                <label>1. Bipe o Crachá:</label>
+                <input type="text" id="sai-cracha" placeholder="Ex: 1020" autofocus autocomplete="off">
+
+                <label>2. Selecione o Item:</label>
+                <select id="sai-item" class="lista-suspensa">
+                    <option value="">Carregando lista...</option>
+                </select>
+
+                <label>3. Quantidade:</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="number" id="sai-qtd" value="1" min="1" style="margin:0;">
+                    <span id="label-saldo" style="font-size:0.9rem; font-weight:bold; color:#7f8c8d;">Disp: -</span>
+                </div>
+
+                <button class="btn-primary" style="margin-top:15px;" onclick="realizarSaida()">CONFIRMAR RETIRADA</button>
+            </div>
+
+        </div>
+
+        <div class="card border-neutral">
+            <div class="table-header">
+                <h2><span class="material-icons txt-neutral">list</span> Estoque Atual</h2>
+                <input type="text" id="filtro" placeholder="🔍 Buscar item..." class="search-bar" onkeyup="filtrar()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Saldo</th>
+                        <th>Status</th>
+                        <th style="text-align:right">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script type="module" src="admin_insumos.js"></script>
+    <script type="module" src="auth_guard.js"></script>
+</body>
+</html>

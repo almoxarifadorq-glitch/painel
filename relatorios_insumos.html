@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SGL - Histórico de Insumos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+       <div class="nav-links">
+    <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
+    <a href="relatorios_insumos.html" class="btn-nav"><span class="material-icons">history</span> Histórico</a>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-left:15px; border-left:1px solid rgba(255,255,255,0.3); padding-left:15px;">
+        <div id="user-display" style="font-size:0.8rem; opacity:0.9;">...</div>
+        <button onclick="fazerLogout()" style="background:rgba(255,50,50,0.2); border:1px solid rgba(255,50,50,0.4); padding:5px 10px; font-size:0.8rem; width:auto; margin:0;">SAIR</button>
+    </div>
+</div>
+    </header>
+
+    <main class="container">
+        
+        <div class="card border-neutral">
+            <div class="table-header">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="filtro" placeholder="🔍 Buscar item ou pessoa..." class="search-bar" onkeyup="filtrar()">
+                    <button class="btn-primary" style="width:auto; margin:0; padding:8px 15px;" onclick="carregarHistorico()">
+                        <span class="material-icons" style="font-size:1rem; vertical-align:middle;">refresh</span> Carregar Dados
+                    </button>
+                </div>
+                <span style="font-size:0.8rem; color:#777;">Busca nos logs gerais filtrando por insumos</span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+        <th>Data / Hora</th>
+        <th>Tipo</th>
+        <th>Item</th>
+        <th>Qtd</th>
+        <th>Responsável (Colab)</th>
+        <th>Liberado Por (Op)</th> </tr>
+                </thead>
+                <tbody id="tabela-hist">
+                    <tr><td colspan="5" style="text-align:center; padding:20px;">Clique em "Carregar Dados" para ver o histórico.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script type="module" src="relatorios_insumos.js"></script>
+    <script type="module" src="auth_guard.js"></script>
+</body>
+</html>

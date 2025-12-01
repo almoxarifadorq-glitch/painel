@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SGL Cloud - Acesso Restrito</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #2c3e50; }
+        .login-card { background: white; padding: 40px; border-radius: 10px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .logo-login { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+        .btn-login { margin-top: 20px; font-size: 1.1rem; }
+        .error-msg { color: #c0392b; font-weight: bold; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <span class="material-icons logo-login">cloud_sync</span>
+        <h2 style="color:#333; margin-top:0;">Acesso SGL</h2>
+        <p style="color:#777; margin-bottom:30px;">Faça login para acessar o sistema.</p>
+
+        <form id="form-login">
+            <label style="text-align:left">E-mail:</label>
+            <input type="email" id="email" placeholder="admin@empresa.com" required>
+
+            <label style="text-align:left">Senha:</label>
+            <input type="password" id="senha" placeholder="******" required>
+
+            <button type="submit" class="btn-primary btn-login">ENTRAR NO SISTEMA</button>
+        </form>
+
+        <p id="msg-erro" class="error-msg">E-mail ou senha incorretos!</p>
+    </div>
+
+    <script type="module">
+        import { auth } from './config.js';
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        // Importa o guarda (pra redirecionar se ja tiver logado)
+        import './auth_guard.js';
+
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const msg = document.getElementById('msg-erro');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, senha);
+                // O auth_guard.js vai perceber o login e redirecionar sozinho
+            } catch (error) {
+                console.error(error);
+                msg.style.display = 'block';
+                if(error.code === 'auth/invalid-credential') msg.innerText = "Dados incorretos.";
+                else if(error.code === 'auth/too-many-requests') msg.innerText = "Muitas tentativas. Aguarde.";
+                else msg.innerText = "Erro ao conectar: " + error.code;
+            }
+        });
+    </script>
+</body>
+</html>

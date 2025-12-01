@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>SGL Cloud - Relatórios</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="material-icons">analytics</span> HISTÓRICO & AUDITORIA
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="card border-primary">
+            <div class="table-header">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="filtro" placeholder="🔍 Buscar (Data, Nome, Ativo)..." class="search-bar" onkeyup="filtrar()">
+                    <button class="btn-primary" style="width:auto; margin:0; padding:8px 15px;" onclick="carregarHistorico()">
+                        <span class="material-icons" style="font-size:1rem; vertical-align:middle;">refresh</span> Atualizar
+                    </button>
+                </div>
+                <span style="font-size:0.8rem; color:#777;">Últimos 50 registros</span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+        <th>Data / Hora</th>
+        <th>Ação</th>
+        <th>Ativo</th>
+        <th>Responsável (Colab)</th> <th>Liberado Por (Op)</th>   <th>Obs / Avaria</th>
+    </tr>
+                </thead>
+                <tbody id="tabela-hist">
+                    <tr><td colspan="5" style="text-align:center; padding:20px;">Carregando dados...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script type="module" src="relatorios.js"></script>
+    <script type="module" src="auth_guard.js"></script>
+</body>
+</html>
