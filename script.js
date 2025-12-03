@@ -31,13 +31,25 @@ window.realizarRetirada = async () => {
 
     if(!cracha || !ativo) return alert("Preencha Crachá e Ativo!");
 
-    // Pega o Operador Logado Real
+    // --- TRAVA NOVA: ANTI-CRACHÁ NO CAMPO ERRADO ---
+    // Se o ativo tiver APENAS números (ex: 2705), é um crachá bipado errado.
+    if (/^\d+$/.test(ativo)) { 
+        alert("⛔ ERRO OPERACIONAL:\n\nVocê bipou um CRACHÁ no campo de EQUIPAMENTO!\nPor favor, bipe o Coletor, Headset ou Máquina.");
+        elAtivo.value = ''; // Limpa só o ativo
+        elAtivo.focus();
+        return;
+    }
+    // ------------------------------------------------
+
+    // Pega o Operador Logado
     const operadorLogado = auth.currentUser ? auth.currentUser.email : "Desconhecido";
 
+    // Validação de RH
     let colab = colaboradoresCache.find(c => c.id === cracha);
     if(!colab && colaboradoresCache.length > 0) return alert("🚨 Colaborador não cadastrado!");
     if(!colab) colab = { nome: "Colaborador", perms: ['COL', 'HST', 'EMP'] }; 
 
+    // Validação de Permissão
     let tipoNecessario = 'COL';
     if(ativo.startsWith('EMP') || ativo.startsWith('TRA')) tipoNecessario = 'EMP';
     else if(ativo.startsWith('HST')) tipoNecessario = 'HST';
@@ -47,29 +59,34 @@ window.realizarRetirada = async () => {
         elAtivo.value = ''; elAtivo.focus(); return;
     }
 
+    // Validação de Frota
     const itemFrota = frotaLocal.find(i => i.id === ativo);
     
+    // --- MUDANÇA AQUI: BLOQUEIO TOTAL SE NÃO EXISTIR ---
     if(!itemFrota) {
-        if(!confirm(`Ativo ${ativo} não cadastrado. Cadastrar agora?`)) return;
-        await addDoc(collection(db, "frota_tempo_real"), {
-            id: ativo, tipo: tipoNecessario, status: 'EM USO', 
-            user: `${colab.nome} (${cracha})`, horaSaida: new Date().toLocaleTimeString()
-        });
-    } else {
-        if(itemFrota.status !== 'DISPONIVEL') return alert(`⛔ Ativo já está como ${itemFrota.status}`);
-        await updateDoc(doc(db, "frota_tempo_real", itemFrota.docId), {
-            status: 'EM USO', user: `${colab.nome} (${cracha})`, horaSaida: new Date().toLocaleTimeString()
-        });
-    }
+        alert(`❌ ERRO: O ativo '${ativo}' NÃO EXISTE no cadastro!\n\nCadastre-o na tela de 'Gestão de Frota' primeiro.`);
+        elAtivo.value = ''; 
+        elAtivo.focus();
+        return; // Para tudo aqui. Não cria nada.
+    } 
+    // ---------------------------------------------------
 
-    // LOG COM O OPERADOR REAL
+    if(itemFrota.status !== 'DISPONIVEL') return alert(`⛔ Ativo já está como ${itemFrota.status}`);
+    
+    // Se passou por tudo, atualiza
+    await updateDoc(doc(db, "frota_tempo_real", itemFrota.docId), {
+        status: 'EM USO', user: `${colab.nome} (${cracha})`, horaSaida: new Date().toLocaleTimeString()
+    });
+
+    // Log
     addDoc(collection(db, "historico_logs"), {
         timestamp: Date.now(), data: new Date().toLocaleString(),
         tipo: 'SAIDA', ativo: ativo, 
-        colaborador: colab.nome, // Quem pegou
-        operador: operadorLogado // Quem liberou
+        colaborador: colab.nome, 
+        operador: operadorLogado
     });
 
+    // Comboio
     elAtivo.value = ''; elAtivo.focus();
     elCracha.classList.add('input-locked'); elCracha.readOnly = true;
     document.getElementById('btn-destravar').style.display = 'block';
