@@ -2,9 +2,20 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>GESTÃO DE ATIVOS</title>
+    <title>RQ - GESTÃO DE ATIVOS</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        textarea {
+            font-family: monospace;
+            height: 150px;
+            font-size: 0.85rem;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow-x: scroll;
+        }
+        .import-box { border-left: 5px solid #27ae60; }
+    </style>
 </head>
 <body>
 
@@ -15,26 +26,47 @@
         <div class="nav-links">
             <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
             <a href="admin_rh.html" class="btn-nav"><span class="material-icons">badge</span> Pessoas</a>
+            <a href="admin_insumos.html" class="btn-nav"><span class="material-icons">inventory</span> Insumos</a>
+            
+            <div style="display:flex; align-items:center; gap:10px; margin-left:15px; border-left:1px solid rgba(255,255,255,0.3); padding-left:15px;">
+                <div id="user-display" style="font-size:0.8rem; opacity:0.9;">...</div>
+                <button onclick="fazerLogout()" style="background:rgba(255,50,50,0.2); border:1px solid rgba(255,50,50,0.4); padding:5px 10px; font-size:0.8rem; width:auto; margin:0;">SAIR</button>
+            </div>
         </div>
     </header>
 
     <main class="container">
         
         <div class="action-panels">
-            <div class="card border-primary">
-                <h2><span class="material-icons txt-primary">add_box</span> Novo Ativo</h2>
-                
-                <label>Código do Ativo (ID):</label>
-                <input type="text" id="novo-id" placeholder="Ex: COL-50" onkeyup="detectarTipo()" autocomplete="off">
-                
-                <label>Tipo de Equipamento:</label>
-                <div class="selector-group">
-                    <label class="option-btn"><input type="radio" name="tipo" value="COL" id="radio-col" checked> 📱 Coletor</label>
-                    <label class="option-btn"><input type="radio" name="tipo" value="HST" id="radio-hst"> 🎧 Headset</label>
-                    <label class="option-btn"><input type="radio" name="tipo" value="EMP" id="radio-emp"> 🚜 Máquina</label>
+            
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div class="card border-primary">
+                    <h2><span class="material-icons txt-primary">add_box</span> Novo Individual</h2>
+                    
+                    <label>Código do Ativo (ID):</label>
+                    <input type="text" id="novo-id" placeholder="Ex: COL-50" onkeyup="detectarTipo()" autocomplete="off">
+                    
+                    <label>Tipo de Equipamento:</label>
+                    <div class="selector-group">
+                        <label class="option-btn"><input type="radio" name="tipo" value="COL" id="radio-col" checked> 📱 Coletor</label>
+                        <label class="option-btn"><input type="radio" name="tipo" value="HST" id="radio-hst"> 🎧 Headset</label>
+                        <label class="option-btn"><input type="radio" name="tipo" value="EMP" id="radio-emp"> 🚜 Máquina</label>
+                    </div>
+
+                    <button class="btn-success" onclick="cadastrarAtivo()">💾 SALVAR UM</button>
                 </div>
 
-                <button class="btn-success" onclick="cadastrarAtivo()">💾 SALVAR NO INVENTÁRIO</button>
+                <div class="card import-box">
+                    <h2><span class="material-icons" style="color:#27ae60">playlist_add</span> Importar do Excel</h2>
+                    <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">
+                        Copie a lista de códigos (ex: HST-01, COL-01) e cole abaixo.<br>
+                        <em>O sistema detecta automaticamente se é Coletor, Headset ou Máquina pelo nome.</em>
+                    </p>
+                    
+                    <textarea id="texto-importacao" placeholder="Cole aqui... Exemplo:&#10;COL-01&#10;HST-01&#10;EMP-05"></textarea>
+
+                    <button class="btn-success" onclick="importarMassaAtivos()">🚀 IMPORTAR LISTA</button>
+                </div>
             </div>
 
             <div class="card border-neutral">
@@ -52,14 +84,15 @@
                         </tr>
                     </thead>
                     <tbody id="lista-corpo">
-                        </tbody>
+                        <tr><td colspan="3" style="text-align:center">Carregando...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
     </main>
 
-    <script type="module" src="admin_ativos.js"></script>
     <script type="module" src="auth_guard.js"></script>
+    <script type="module" src="admin_ativos.js"></script>
 </body>
 </html>
