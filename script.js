@@ -144,6 +144,8 @@ window.abrirHistorico = async (ativo) => {
 function renderizarTabela() {
     const tbody = document.getElementById('tabela-corpo');
     tbody.innerHTML = '';
+    
+    // Filtra apenas o que NÃO está disponível para mostrar na tabela (fica mais limpo)
     const ocupados = frotaLocal.filter(i => i.status !== 'DISPONIVEL');
 
     ocupados.forEach(item => {
@@ -153,11 +155,17 @@ function renderizarTabela() {
         else if(item.id.startsWith('HST')) icone = '<span class="material-icons icon-hst">headset_mic</span>';
 
         let badge = 'tag-uso';
-        // Botão de devolver para todos (mesmo manutenção, para liberar rápido)
+        // Botão padrão de devolver
         let btn = `<button onclick="preencherDev('${item.id}')" style="padding:5px; width:auto; background:var(--primary);">⬇ Devolver</button>`;
         
-        if(item.status === 'MANUTENCAO') { badge = 'tag-manutencao'; }
-        else if(item.status === 'CARGA') { badge = 'tag-carga'; }
+        if(item.status === 'MANUTENCAO') { 
+            badge = 'tag-manutencao'; 
+            btn = `<button onclick="liberar('${item.docId}')" style="padding:5px; width:auto; background:var(--success);">✅ Liberar</button>`; 
+        }
+        else if(item.status === 'CARGA') { 
+            badge = 'tag-carga'; 
+            btn = `<button onclick="liberar('${item.docId}')" style="padding:5px; width:auto; background:var(--success);">✅ Carga OK</button>`; 
+        }
 
         tbody.innerHTML += `
             <tr class="${item.status !== 'EM USO' ? 'row-blocked' : ''}">
@@ -168,9 +176,18 @@ function renderizarTabela() {
             </tr>`;
     });
 
-    document.getElementById('kpi-uso').innerText = frotaLocal.filter(i => i.status === 'EM USO').length;
-    document.getElementById('kpi-manutencao').innerText = frotaLocal.filter(i => i.status === 'MANUTENCAO').length;
-    document.getElementById('kpi-total').innerText = frotaLocal.length;
+    // --- CORREÇÃO DOS KPIS (CONTADORES) ---
+    const total = frotaLocal.length;
+    const uso = frotaLocal.filter(i => i.status === 'EM USO').length;
+    const manut = frotaLocal.filter(i => i.status === 'MANUTENCAO').length;
+    const carga = frotaLocal.filter(i => i.status === 'CARGA').length;
+
+    document.getElementById('kpi-total').innerText = total;
+    document.getElementById('kpi-uso').innerText = uso;
+    document.getElementById('kpi-manutencao').innerText = manut;
+    
+    // AQUI ESTAVA FALTANDO: Calculamos o disponível por subtração (Mais seguro)
+    document.getElementById('kpi-livre').innerText = total - uso - manut - carga;
 }
 
 // Utilitários Globais
