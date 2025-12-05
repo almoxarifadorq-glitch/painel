@@ -2,56 +2,106 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>SGL - Histórico de Insumos</title>
+    <title>RQ - Relatórios de insumos</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .tab-analise th { background-color: #2c3e50; color: white; border: 1px solid #34495e; text-align: center; }
+        .tab-analise td { text-align: center; border: 1px solid #ddd; font-weight: bold; }
+        .txt-left { text-align: left !important; }
+        .status-ok { color: #27ae60; }
+        .status-critico { color: #c0392b; background-color: #fadbd8; padding: 2px 5px; border-radius: 4px; }
+        .status-atencao { color: #f39c12; }
+    </style>
 </head>
 <body>
 
     <header>
-       <div class="nav-links">
-    <a href="index.html" class="btn-nav"><span class="material-icons">dashboard</span> Painel</a>
-    <a href="relatorios_insumos.html" class="btn-nav"><span class="material-icons">history</span> Histórico</a>
-
-    <div style="display:flex; align-items:center; gap:10px; margin-left:15px; border-left:1px solid rgba(255,255,255,0.3); padding-left:15px;">
-        <div id="user-display" style="font-size:0.8rem; opacity:0.9;">...</div>
-        <button onclick="fazerLogout()" style="background:rgba(255,50,50,0.2); border:1px solid rgba(255,50,50,0.4); padding:5px 10px; font-size:0.8rem; width:auto; margin:0;">SAIR</button>
-    </div>
-</div>
+        <div class="logo-area">
+            <span class="material-icons">analytics</span> RELATÓRIO DE INSUMOS
+        </div>
+        <div class="nav-links">
+            <a href="admin_insumos.html" class="btn-nav"><span class="material-icons">arrow_back</span> Voltar</a>
+        </div>
     </header>
 
     <main class="container">
         
-        <div class="card border-neutral">
-            <div class="table-header">
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="text" id="filtro" placeholder="🔍 Buscar item ou pessoa..." class="search-bar" onkeyup="filtrar()">
-                    <button class="btn-primary" style="width:auto; margin:0; padding:8px 15px;" onclick="carregarHistorico()">
-                        <span class="material-icons" style="font-size:1rem; vertical-align:middle;">refresh</span> Carregar Dados
-                    </button>
-                </div>
-                <span style="font-size:0.8rem; color:#777;">Busca nos logs gerais filtrando por insumos</span>
-            </div>
+        <div class="card" style="text-align: center; padding: 20px;">
+            <h2 style="margin-top:0">1. Previsão de Estoque</h2>
+            <button class="btn-primary" style="width: auto; padding: 10px 30px;" onclick="gerarAnalise()">
+                <span class="material-icons" style="vertical-align:middle">calculate</span> CALCULAR PREVISÃO
+            </button>
+        </div>
 
+        <div class="card border-neutral">
+            <table class="tab-analise">
+                <thead>
+                    <tr>
+                        <th>CÓDIGO</th>
+                        <th class="txt-left">DESCRIÇÃO</th>
+                        <th>EMB.</th>
+                        <th>SAÍDA DIA</th>
+                        <th>SALDO</th>
+                        <th>DIAS ESTOQUE</th>
+                        
+                        <th>LEAD TIME</th>
+                        
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-analise">
+                    <tr><td colspan="8" style="padding:15px; color:#999">Clique no botão acima para calcular...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card border-primary" style="margin-top: 30px;">
+            
+            <div class="table-header" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <h2 style="margin:0">2. Histórico Detalhado</h2>
+                
+                <div style="display:flex; gap:10px; flex-wrap:wrap; width:100%; background:#f8f9fa; padding:10px; border-radius:6px; border:1px solid #eee;">
+                    <div>
+                        <label style="margin:0; font-size:0.75rem;">De:</label>
+                        <input type="date" id="data-ini" style="margin:0; padding:5px;">
+                    </div>
+                    <div>
+                        <label style="margin:0; font-size:0.75rem;">Até:</label>
+                        <input type="date" id="data-fim" style="margin:0; padding:5px;">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn-primary" style="width:auto; padding:8px 15px; margin:0;" onclick="filtrarPorData()">
+                            <span class="material-icons" style="font-size:1rem; vertical-align:middle">search</span> Filtrar
+                        </button>
+                    </div>
+                    
+                    <div style="flex-grow:1; display:flex; align-items:flex-end;">
+                        <input type="text" id="filtro" placeholder="🔍 Buscar nome ou item..." class="search-bar" style="width:100%; margin:0;" onkeyup="filtrarTexto()">
+                    </div>
+                </div>
+            </div>
+            
             <table>
                 <thead>
                     <tr>
-        <th>Data / Hora</th>
-        <th>Tipo</th>
-        <th>Item</th>
-        <th>Qtd</th>
-        <th>Responsável (Colab)</th>
-        <th>Liberado Por (Op)</th> </tr>
+                        <th>Data / Hora</th>
+                        <th>Ação</th>
+                        <th>Item</th>
+                        <th>Qtd.</th>
+                        <th>Quem Pegou (Colab)</th>
+                        <th>Quem Liberou (Op)</th>
+                    </tr>
                 </thead>
                 <tbody id="tabela-hist">
-                    <tr><td colspan="5" style="text-align:center; padding:20px;">Clique em "Carregar Dados" para ver o histórico.</td></tr>
+                    <tr><td colspan="6" style="padding:15px; text-align:center;">Carregando últimos 100...</td></tr>
                 </tbody>
             </table>
         </div>
 
     </main>
 
-    <script type="module" src="relatorios_insumos.js"></script>
     <script type="module" src="auth_guard.js"></script>
+    <script type="module" src="relatorios_insumos.js"></script>
 </body>
 </html>
