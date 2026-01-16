@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Rio Quality</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* GERAL */
+        body {
+            /* Fonte do corpo do texto: Poppins Regular */
+            font-family: 'Poppins', sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Fundo levemente esverdeado/cinza para combinar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #444;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08); /* Sombra mais difusa */
+            width: 90%;
+            max-width: 750px;
+            text-align: center;
+        }
+
+        /* TIPOGRAFIA DA MARCA */
+        h1 { 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 900; /* Inter Black para Títulos */
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            color: #2d3436;
+            text-transform: uppercase; /* Deixa o título mais imponente */
+            letter-spacing: -1px;
+        }
+        
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700; /* Inter Bold para Subtítulos */
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        p { 
+            font-family: 'Poppins', sans-serif;
+            color: #666; 
+            margin-bottom: 40px; 
+            font-size: 1.1rem; 
+        }
+
+        /* LAYOUT DOS BOTÕES */
+        .botoes-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Mais espaço entre os botões */
+            margin-bottom: 20px;
+        }
+
+        /* ESTILO DOS BOTÕES CIRCULARES COM A NOVA IDENTIDADE */
+        .btn-main {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efeito de brilho sutil no topo para parecer 3D (estilo botão da imagem) */
+        .btn-main::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            border-radius: 50%;
+        }
+
+        .btn-main:active { transform: scale(0.96); }
+
+        .icon { font-size: 4rem; margin-bottom: 15px; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+        
+        .btn-label { 
+            font-family: 'Inter', sans-serif; /* Título do botão em Inter */
+            font-weight: 900;
+            font-size: 1.3rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* CORES DA MARCA */
+        
+        /* Botão Cliente: Degradê Laranja/Amarelo */
+        .btn-cliente { 
+            background: linear-gradient(135deg, #FF8C00 0%, #FFD700 100%); 
+        } 
+        
+        /* Botão Fornecedor: Degradê Verde */
+        .btn-fornecedor { 
+            background: linear-gradient(135deg, #009E4D 0%, #00C853 100%); 
+        }
+
+        /* --- ÁREA DE NOTAS --- */
+        #tela-avaliacao, #tela-agradecimento { display: none; }
+
+        .notas-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn-nota {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            width: 60px;
+            height: 60px;
+            font-size: 1.4rem;
+            background: white;
+            border-width: 3px;
+            border-style: solid;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            color: #555;
+            border-color: #eee;
+        }
+
+        .btn-nota:hover { transform: translateY(-3px); }
+
+        /* Lógica das Cores (1-4 Vermelho, 5-7 Amarelo, 8-10 Verde) */
+        
+        .nota-ruim { border-color: #e74c3c; color: #e74c3c; }
+        .nota-ruim.selecionado { background-color: #e74c3c; color: white; border-color: #e74c3c; }
+
+        .nota-media { border-color: #f1c40f; color: #f1c40f; }
+        .nota-media.selecionado { background-color: #f1c40f; color: white; border-color: #f1c40f; }
+
+        /* Verde das notas combinando com a marca */
+        .nota-boa { border-color: #009E4D; color: #009E4D; }
+        .nota-boa.selecionado { background-color: #009E4D; color: white; border-color: #009E4D; }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 15px;
+            border: 2px solid #eee;
+            background-color: #fafafa;
+            border-radius: 15px;
+            resize: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+        
+        textarea:focus { border-color: #009E4D; background: white; }
+
+        .btn-enviar {
+            background: linear-gradient(135deg, #333 0%, #000 100%);
+            color: white;
+            padding: 15px 60px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-voltar {
+            background: transparent;
+            border: none;
+            color: #999;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: underline;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="tela-inicial">
+            <h1>Ajude-nos a melhorar o nosso atendimento</h1>
+            <p>A sua avaliação leva menos de 1 minuto e é essencial para a Rio Quality.</p>
+            
+            <div class="botoes-wrapper">
+                <button class="btn-main btn-cliente" onclick="escolherPerfil('CLIENTE')">
+                    <span class="icon">👤</span>
+                    <span class="btn-label">Sou Cliente</span>
+                </button>
+                <button class="btn-main btn-fornecedor" onclick="escolherPerfil('FORNECEDOR')">
+                    <span class="icon">🚚</span>
+                    <span class="btn-label">Sou Fornecedor</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="tela-avaliacao">
+            <h2 id="titulo-avaliacao">Como foi o atendimento?</h2>
+            
+            <div class="notas-container" id="container-notas">
+                </div>
+
+            <textarea id="observacao" placeholder="Alguma observação para melhorarmos? (Opcional)"></textarea>
+
+            <br>
+            <button class="btn-enviar" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+            <br>
+            <button class="btn-voltar" onclick="voltarInicio()">Cancelar</button>
+        </div>
+
+        <div id="tela-agradecimento">
+            <div style="font-size: 6rem; color: #009E4D; margin-bottom: 20px;">&#10003;</div>
+            <h1>Obrigado!</h1>
+            <p>Sua avaliação foi recebida com sucesso.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // === LÓGICA DO SISTEMA ===
+        let perfilSelecionado = "";
+        let notaSelecionada = 0;
+
+        window.onload = function() {
+            const container = document.getElementById('container-notas');
+            for (let i = 1; i <= 10; i++) {
+                let btn = document.createElement('button');
+                btn.innerText = i;
+                btn.className = 'btn-nota';
+
+                // Aplica as classes de cor (Vermelho, Amarelo, Verde)
+                if (i <= 4) btn.classList.add('nota-ruim');
+                else if (i <= 7) btn.classList.add('nota-media');
+                else btn.classList.add('nota-boa');
+
+                btn.onclick = function() { selecionarNota(i, btn); };
+                container.appendChild(btn);
+            }
+        };
+
+        function escolherPerfil(tipo) {
+            perfilSelecionado = tipo;
+            mudarTela('tela-inicial', 'tela-avaliacao');
+            let texto = (tipo === 'CLIENTE') ? 'CLIENTE' : 'FORNECEDOR';
+            document.getElementById('titulo-avaliacao').innerText = 'ATENDIMENTO AO ' + texto;
+        }
+
+        function selecionarNota(valor, elementoBotao) {
+            notaSelecionada = valor;
+            let botoes = document.getElementsByClassName('btn-nota');
+            for (let btn of botoes) btn.classList.remove('selecionado');
+            elementoBotao.classList.add('selecionado');
+        }
+
+        function enviarAvaliacao() {
+            if (notaSelecionada === 0) {
+                alert("Por favor, selecione uma nota.");
+                return;
+            }
+
+            // Mostra texto "Enviando..." no botão para dar feedback
+            const btnEnviar = document.querySelector('.btn-enviar');
+            const textoOriginal = btnEnviar.innerText;
+            btnEnviar.innerText = "Enviando...";
+            btnEnviar.disabled = true;
+
+            const observacao = document.getElementById('observacao').value;
+
+            // O ENDEREÇO DO SEU SCRIPT (Cole o link entre as aspas abaixo)
+            const scriptURL = "https://script.google.com/macros/s/AKfycbziXFZcw9R_RCsPDAn-LyUP_1IAtGsYgIPzyp3ozg5h2chWZS9lyJkwDPgfHDvjzF_H/exec"; 
+
+            // Pacote de dados para envio
+            const dadosParaEnviar = {
+                perfil: perfilSelecionado,
+                nota: notaSelecionada,
+                observacao: observacao
+            };
+
+            // O envio real (Fetch)
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', // Importante para evitar erros de segurança do navegador
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosParaEnviar)
+            })
+            .then(() => {
+                // Deu tudo certo!
+                console.log("Enviado para a planilha!");
+                mudarTela('tela-avaliacao', 'tela-agradecimento');
+                
+                // Restaura o botão
+                btnEnviar.innerText = textoOriginal;
+                btnEnviar.disabled = false;
+                
+                setTimeout(resetarSistema, 3000);
+            })
+            .catch(error => {
+                console.error('Erro!', error);
+                alert("Houve um erro ao salvar, mas obrigado pela tentativa!");
+                
+                // Mesmo com erro, vamos reiniciar para não travar a fila
+                mudarTela('tela-avaliacao', 'tela-agradecimento');
+                setTimeout(resetarSistema, 3000);
+            });
+        }
+
+        function voltarInicio() { resetarSistema(); }
+
+        function resetarSistema() {
+            perfilSelecionado = "";
+            notaSelecionada = 0;
+            document.getElementById('observacao').value = "";
+            let botoes = document.getElementsByClassName('btn-nota');
+            for (let btn of botoes) btn.classList.remove('selecionado');
+            
+            document.getElementById('tela-agradecimento').style.display = 'none';
+            document.getElementById('tela-avaliacao').style.display = 'none';
+            document.getElementById('tela-inicial').style.display = 'block';
+        }
+
+        function mudarTela(atual, proxima) {
+            document.getElementById(atual).style.display = 'none';
+            let prox = document.getElementById(proxima);
+            prox.style.display = 'block';
+            prox.style.opacity = 0;
+            let op = 0.1;
+            let timer = setInterval(function () {
+                if (op >= 1) clearInterval(timer);
+                prox.style.opacity = op;
+                op += op * 0.1;
+            }, 10);
+        }
+    </script>
+</body>
+</html>
