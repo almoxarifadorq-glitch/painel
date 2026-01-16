@@ -260,19 +260,23 @@
 }
 
 /* --- TECLADO VIRTUAL --- */
+/* --- TECLADO VIRTUAL (Versão Compacta) --- */
 #teclado-virtual {
-    display: none; /* Escondido por padrão */
+    display: none;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     background-color: #e0e0e0;
-    padding: 10px 0;
+    
+    /* MUDANÇA 1: Menos espaço em cima e em baixo no container */
+    padding: 5px 0 0 0; 
+    
     box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
     z-index: 1000;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 5px; /* Espaço menor entre as linhas */
     animation: subir 0.3s ease-out;
 }
 
@@ -284,8 +288,9 @@
 .linha-teclas {
     display: flex;
     justify-content: center;
-    gap: 5px;
-    width: 100%;
+    gap: 4px; /* Teclas mais juntinhas */
+    width: 98%; /* Ocupa quase toda a largura */
+    margin-bottom: 5px; /* Espaço para a próxima linha */
 }
 
 .tecla {
@@ -293,19 +298,32 @@
     font-weight: 600;
     background: white;
     border: none;
-    border-radius: 8px;
-    padding: 15px 0;
-    width: 8.5%; /* Largura dinâmica para caber na tela */
-    font-size: 1.2rem;
+    border-radius: 6px;
+    
+    /* MUDANÇA 2: Altura fixa menor para as teclas não ficarem gigantes */
+    height: 45px; 
+    padding: 0; /* Remove o enchimento interno */
+    
+    width: 9%; /* Ajuste fino na largura */
+    font-size: 1.1rem;
     color: #333;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     cursor: pointer;
+    
+    /* Centralizar o texto dentro da tecla fixa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tecla:active {
     background-color: #ddd;
     transform: translateY(2px);
 }
+
+.tecla-espaco { width: 45%; }
+.tecla-apagar { background-color: #ffcccc; color: #d32f2f; width: 12%; }
+.tecla-fechar { background-color: #009E4D; color: white; width: 15%; font-size: 0.9rem; }
 
 .tecla-espaco { width: 40%; }
 .tecla-apagar { background-color: #ffcccc; color: #d32f2f; width: 13%; }
