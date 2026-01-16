@@ -311,6 +311,38 @@
 .tecla-apagar { background-color: #ffcccc; color: #d32f2f; width: 13%; }
 .tecla-fechar { background-color: #009E4D; color: white; width: 15%; font-size: 1rem; }
 
+/* --- CORREÇÃO PARA TABLET DEITADO (PAISAGEM) --- */
+@media (orientation: landscape) {
+    
+    /* Diminui o container do teclado */
+    #teclado-virtual {
+        padding: 2px 0; /* Quase sem borda */
+        gap: 2px;       /* Gruda mais as linhas */
+        background-color: rgba(224, 224, 224, 0.95); /* Leve transparência */
+    }
+
+    /* Teclas mais baixas e compactas */
+    .tecla {
+        padding: 0;       /* Remove enchimento extra */
+        height: 45px;     /* Altura fixa menor */
+        font-size: 1rem;  /* Letra um pouco menor */
+        display: flex;
+        align-items: center; /* Centraliza o texto verticalmente */
+        justify-content: center;
+        margin-bottom: 2px;
+    }
+
+    /* Ajusta o campo de texto para não sumir */
+    textarea {
+        height: 60px; /* Diminui a altura do campo de texto na horizontal */
+    }
+
+    /* (Opcional) Esconde o título principal quando digitar na horizontal para dar espaço */
+    /* Isso ajuda muito em tablets velhos */
+    .esconder-na-horizontal {
+        display: none;
+    }
+}
     </style>
 </head>
 <body>
@@ -545,12 +577,30 @@ function fecharAlerta() {
 
 function abrirTeclado() {
     document.getElementById('teclado-virtual').style.display = 'flex';
-    // Rola a página um pouco para baixo para garantir que o campo de texto fique visível
+    
+    // Se estiver na horizontal, esconde o título e o subtítulo para ganhar espaço
+    if (window.innerHeight < window.innerWidth) {
+        document.querySelector('h1').style.display = 'none';
+        document.querySelector('p').style.display = 'none';
+        
+        // Esconde também os botões de perfil para focar só no texto
+        document.querySelector('.botoes-wrapper').style.display = 'none'; 
+    }
+
+    // Rola para o campo de texto
     document.getElementById('observacao').scrollIntoView({behavior: "smooth"});
 }
 
 function fecharTeclado() {
     document.getElementById('teclado-virtual').style.display = 'none';
+    
+    // Traz tudo de volta ao normal quando fechar
+    document.querySelector('h1').style.display = 'block';
+    document.querySelector('p').style.display = 'block';
+    // Se estiver na tela inicial, os botões voltam. Se estiver na avaliação, não precisa.
+    // Mas como o teclado só abre na tela de avaliação, podemos deixar assim:
+    // (Opcional: Se quiser que os botões voltem apenas na tela inicial, ignore esta linha, 
+    // mas o layout da avaliação não tem botões grandes, então tudo bem).
 }
 
 function addLetra(letra) {
