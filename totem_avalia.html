@@ -258,6 +258,59 @@
     cursor: pointer;
     font-size: 1rem;
 }
+
+/* --- TECLADO VIRTUAL --- */
+#teclado-virtual {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e0e0e0;
+    padding: 10px 0;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: subir 0.3s ease-out;
+}
+
+@keyframes subir {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.linha-teclas {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.tecla {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    background: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 0;
+    width: 8.5%; /* Largura dinâmica para caber na tela */
+    font-size: 1.2rem;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.tecla:active {
+    background-color: #ddd;
+    transform: translateY(2px);
+}
+
+.tecla-espaco { width: 40%; }
+.tecla-apagar { background-color: #ffcccc; color: #d32f2f; width: 13%; }
+.tecla-fechar { background-color: #009E4D; color: white; width: 15%; font-size: 1rem; }
+
     </style>
 </head>
 <body>
@@ -288,7 +341,10 @@
             <div class="notas-container" id="container-notas">
                 </div>
 
-            <textarea id="observacao" placeholder="Alguma observação para melhorarmos? (Opcional)"></textarea>
+            <textarea id="observacao" 
+          placeholder="Toque aqui para digitar..." 
+          readonly 
+          onclick="abrirTeclado()"></textarea>
 
             <br>
             <button class="btn-enviar" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
@@ -310,6 +366,45 @@
     </div>
 </div>
 
+<div id="teclado-virtual">
+    <div class="linha-teclas">
+        <button class="tecla" onclick="addLetra('Q')">Q</button>
+        <button class="tecla" onclick="addLetra('W')">W</button>
+        <button class="tecla" onclick="addLetra('E')">E</button>
+        <button class="tecla" onclick="addLetra('R')">R</button>
+        <button class="tecla" onclick="addLetra('T')">T</button>
+        <button class="tecla" onclick="addLetra('Y')">Y</button>
+        <button class="tecla" onclick="addLetra('U')">U</button>
+        <button class="tecla" onclick="addLetra('I')">I</button>
+        <button class="tecla" onclick="addLetra('O')">O</button>
+        <button class="tecla" onclick="addLetra('P')">P</button>
+    </div>
+    <div class="linha-teclas">
+        <button class="tecla" onclick="addLetra('A')">A</button>
+        <button class="tecla" onclick="addLetra('S')">S</button>
+        <button class="tecla" onclick="addLetra('D')">D</button>
+        <button class="tecla" onclick="addLetra('F')">F</button>
+        <button class="tecla" onclick="addLetra('G')">G</button>
+        <button class="tecla" onclick="addLetra('H')">H</button>
+        <button class="tecla" onclick="addLetra('J')">J</button>
+        <button class="tecla" onclick="addLetra('K')">K</button>
+        <button class="tecla" onclick="addLetra('L')">L</button>
+    </div>
+    <div class="linha-teclas">
+        <button class="tecla" onclick="addLetra('Z')">Z</button>
+        <button class="tecla" onclick="addLetra('X')">X</button>
+        <button class="tecla" onclick="addLetra('C')">C</button>
+        <button class="tecla" onclick="addLetra('V')">V</button>
+        <button class="tecla" onclick="addLetra('B')">B</button>
+        <button class="tecla" onclick="addLetra('N')">N</button>
+        <button class="tecla" onclick="addLetra('M')">M</button>
+        <button class="tecla tecla-apagar" onclick="apagarLetra()">⌫</button>
+    </div>
+    <div class="linha-teclas">
+        <button class="tecla tecla-espaco" onclick="addLetra(' ')">ESPAÇO</button>
+        <button class="tecla tecla-fechar" onclick="fecharTeclado()">OK</button>
+    </div>
+</div>
     </div>
 
     <script>
@@ -447,6 +542,28 @@ function mostrarAlerta(mensagem) {
 function fecharAlerta() {
     document.getElementById('meu-alerta').style.display = 'none';
 }
+
+function abrirTeclado() {
+    document.getElementById('teclado-virtual').style.display = 'flex';
+    // Rola a página um pouco para baixo para garantir que o campo de texto fique visível
+    document.getElementById('observacao').scrollIntoView({behavior: "smooth"});
+}
+
+function fecharTeclado() {
+    document.getElementById('teclado-virtual').style.display = 'none';
+}
+
+function addLetra(letra) {
+    let campo = document.getElementById('observacao');
+    campo.value += letra;
+}
+
+function apagarLetra() {
+    let campo = document.getElementById('observacao');
+    campo.value = campo.value.slice(0, -1);
+}
     </script>
+
+    
 </body>
 </html>
