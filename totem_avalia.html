@@ -212,7 +212,9 @@
         <div id="tela-inicial">
             <h1>Ajude-nos a melhorar o nosso atendimento</h1>
             <p>A sua avaliação leva menos de 1 minuto e é essencial para a Rio Quality.</p>
-            
+            <button onclick="ativarTelaCheia()" style="background:none; border:none; color:#ddd; font-size:12px; margin-bottom:10px; cursor:pointer;">
+        [ Ativar Modo Tela Cheia ]
+    </button>
             <div class="botoes-wrapper">
                 <button class="btn-main btn-cliente" onclick="escolherPerfil('CLIENTE')">
                     <span class="icon">👤</span>
@@ -363,6 +365,16 @@
                 op += op * 0.1;
             }, 10);
         }
+        function ativarTelaCheia() {
+    var elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari e Opera antigos */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge antigos */
+        elem.msRequestFullscreen();
+    }
+}
     </script>
 </body>
 </html>
