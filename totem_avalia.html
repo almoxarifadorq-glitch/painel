@@ -532,16 +532,32 @@
         function voltarInicio() { resetarSistema(); }
 
         function resetarSistema() {
-            perfilSelecionado = "";
-            notaSelecionada = 0;
-            document.getElementById('observacao').value = "";
-            let botoes = document.getElementsByClassName('btn-nota');
-            for (let btn of botoes) btn.classList.remove('selecionado');
-            
-            document.getElementById('tela-agradecimento').style.display = 'none';
-            document.getElementById('tela-avaliacao').style.display = 'none';
-            document.getElementById('tela-inicial').style.display = 'block';
-        }
+    perfilSelecionado = "";
+    notaSelecionada = 0;
+    
+    // 1. Limpa o campo de texto
+    document.getElementById('observacao').value = "";
+    
+    // 2. Tira a seleção das notas (bolinhas)
+    let botoes = document.getElementsByClassName('btn-nota');
+    for (let btn of botoes) btn.classList.remove('selecionado');
+    
+    // 3. Garante que o Teclado Virtual está fechado
+    document.getElementById('teclado-virtual').style.display = 'none';
+
+    // 4. CORREÇÃO DO BUG: Força os elementos da tela inicial a aparecerem de novo
+    // (Mesmo que tenham sido escondidos pelo teclado anteriormente)
+    document.querySelector('h1').style.display = 'block';
+    document.querySelector('p').style.display = 'block';
+    
+    // Importante: Os botões usam 'flex' para ficar lado a lado, não 'block'
+    document.querySelector('.botoes-wrapper').style.display = 'flex'; 
+
+    // 5. Troca as telas
+    document.getElementById('tela-agradecimento').style.display = 'none';
+    document.getElementById('tela-avaliacao').style.display = 'none';
+    document.getElementById('tela-inicial').style.display = 'block';
+}
 
         function mudarTela(atual, proxima) {
             document.getElementById(atual).style.display = 'none';
